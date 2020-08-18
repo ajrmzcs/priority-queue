@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+  priority-app:
+    build:
+      context: '.'
+      args:
+        uid: ${UID}
+        user: ${PRIORITY_USER}
+    container_name: priority-queue-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - priority-queue-network
+
+  priority-db:
+    image: mysql:5.7
+    container_name: priority-db
+    volumes:
+      - ./run/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=priority
+      - MYSQL_USER=priority
+      - MYSQL_PASSWORD=secret
+    ports:
+      - 4306:3306
+    networks:
+      - priority-queue-network
+
+  priority-nginx:
+    image: nginx:1.17-alpine
+    container_name: priority-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www
+      - ./run/nginx:/etc/nginx/conf.d
+    networks:
+      - priority-queue-network
+
+  priority-redis:
+    image: redis:latest
+    container_name: redis
+    command: redis-server --requirepass secret_password
+    volumes:
+      - ./run/var/redis:/data
+    ports:
+      - "7379:6379"
+    networks:
+      - priority-queue-network
+
+networks:
+  priority-queue-network:
+    driver: bridge
