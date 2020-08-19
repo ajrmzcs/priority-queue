@@ -41,6 +41,45 @@ class PriorityJobsTest extends TestCase
     }
 
     /** @test */
+    public function it_lists_paginated_priority_jobs()
+    {
+        $this->json('GET','api/priorityjobs')
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    [
+                        'id',
+                        'submitter_id',
+                        'processor_id',
+                        'priority',
+                        'command',
+                        'start_date',
+                        'end_date',
+                        'created_at',
+                        'updated_at',
+                    ]
+                ],
+                'links'
+            ]);
+    }
+
+    /** @test */
+    public function it_creates_priority_jobs()
+    {
+        $this->json('POST','api/priorityjobs', [
+            'submitter_id'  => 1,
+            'priority'      => 'high',
+            'command'       => 'command_1'
+            ])
+            ->assertStatus(201);
+
+        $this->assertDatabaseHas('priority_jobs', [
+            'priority'          => 'high',
+        ]);
+
+    }
+
+    /** @test */
     public function it_calculates_average_time()
     {
         $avgProcessingTime = ProcessingTime::getAverageProcessedTime();

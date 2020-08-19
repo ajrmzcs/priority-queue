@@ -30,7 +30,7 @@ class PriorityJobsController extends Controller
     public function store(PriorityJobRequest $request)
     {
         $priorityJob = PriorityJobs::create($request->all());
-        ProcessJobByPriority::dispatch($priorityJob);
+        dispatch((new ProcessJobByPriority($priorityJob))->onQueue($request->priority));
         return new PriorityJobResource($priorityJob);
     }
 
