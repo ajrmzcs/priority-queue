@@ -42,7 +42,7 @@ class CommandTwo extends Command
         $priorityJob->processor_id = $this->argument('processorId');
         $priorityJob->start_date = now();
 
-        sleep(30);
+        sleep(20);
 
         $priorityJob->end_date = now();
         $priorityJob->save();
