@@ -16,20 +16,24 @@ Priority jobs have:
 composer install
 ```
 3. copy .env.example to .env
-4. Make sure you have installed **docker** in your local machine
-5. Build local development env. with **docker-compose** Run:
+4. Run:
+```
+php artisan key:generate
+```
+5. Make sure you have installed **docker** in your local machine
+6. Build local development env. with **docker-compose** Run:
 ```
 docker-compose build --no-cache && docker-compose up -d --force-recreate && docker-compose logs -f
 ```
-6. Access php cli:
+7. Access php cli:
 ```
 docker exec -it --user root priority-queue-app bash
 ``` 
-7. Run migrations:
+8. Run migrations:
 ```
 php artisan migrate
 ```
-8. Run supervisor:
+9. Run supervisor:
 ```
 service supervisor start
 ```
@@ -59,3 +63,5 @@ service supervisor start
 ```
 
 You can either use postman or use this [small laravel client](https://github.com/ajrmzcs/priority-queue-client).
+
+Find api documentation in *Priority - Queue.postman_collection.json* in project's root.
